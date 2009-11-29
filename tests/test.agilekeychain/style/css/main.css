@@ -1,0 +1,663 @@
+/* @group Reset */
+
+/* http://meyerweb.com/eric/tools/css/reset/ */
+/* v1.0 | 20080212 */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	vertical-align: baseline;
+	background: transparent;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+	outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* @end */
+
+/* @group Login */
+
+a, a:active, a:focus {
+	border-style: none;
+	outline: 0;
+}
+
+img {
+	border-style: none;
+	outline: 0;
+}
+
+img#background {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+img#left {
+	width: 20px;
+	position: absolute;
+	height: 100%;
+}
+
+img#top {
+	height: 20px;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	border-bottom: 1px solid #4c4c4c;
+}
+
+img#right {
+	width: 20px;
+	position: absolute;
+	height: 100%;
+	right: 0;
+}
+
+img#bottom {
+	height: 20px;
+	position: absolute;
+	bottom: 0;
+	border-top: 1px solid rgba(255,255,255,0.3);
+	width: 100%;
+}
+
+img#doors {
+	width: 40px;
+	position: absolute;
+	left: 50%;
+	margin-left: -187px;
+	height: 100%;
+}
+
+img#branding {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+}
+
+form#login {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin: -145px 0 0 -282px;
+	padding: 0;
+	width: 471px;
+	height: 267px;
+}
+
+button, button:active, button:focus {
+	margin: 0;
+	padding: 0;
+	background-color: transparent;
+	border-style: none;
+	display: block;
+}
+
+#keyhole {
+	width: 195px;
+	height: 267px;
+	background-image: url(../images/keyhole.png);
+	position: absolute;
+}
+
+#passwordLabel {
+	background-image: url(../images/password-label.png);
+	width: 180px;
+	height: 16px;
+	position: absolute;
+	margin: 84px 0 0 208px;
+	padding: 0;
+}
+
+#passwordLabel.error {
+	background-position: 0 -16px !important;
+}
+
+#masterPassword {
+	border-style: none;
+	font-size: 26px;
+	color: white;
+	background-color: transparent;
+	padding: 6px 16px 9px 28px;
+	vertical-align: top;
+	margin: 111px 0 0 179px;
+	position: absolute;
+	width: 248px;
+	height: 31px;
+	text-shadow: #000 0 2px 5px;
+	background-image: url(../images/password-bg.png);
+}
+
+#masterPassword:focus {
+	background-position: 0 -46px;
+}
+
+#masterPassword.error:focus {
+	background-position: 0 -92px;
+}
+
+#unlock {
+	width: 87px;
+	height: 48px;
+	background: transparent url(../images/unlock-button.png) no-repeat;
+	visibility: visible;
+	position: absolute;
+	margin: 109px 0 0 479px;
+}
+
+#unlock:hover {
+	background-position: 0 -48px;
+}
+
+#unlock:active {
+	background-position: 0 -96px;
+}
+
+#unlock:focus {
+	background-position: 0 -144px;
+}
+
+div#wrapper {
+	min-height: 400px;
+	min-width: 650px;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+
+img#rivetTL {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+img#rivetTR {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+img#rivetBL {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+}
+
+img#rivetsDoorsTop {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	margin-left: -189px;
+}
+
+img#rivetsDoorsBottom {
+	position: absolute;
+	left: 50%;
+	margin-left: -189px;
+	bottom: 0;
+}
+
+a#help {
+	position: absolute;
+	left: 35px;
+	bottom: 35px;
+	background-image: url(../images/help-button.png);
+	width: 34px;
+	height: 34px;
+}
+
+a#help:hover {
+	background-position: 0 -34px;
+}
+
+a#help:active {
+	background-position: 0 -68px;
+}
+
+#passwordError {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -74px;
+	margin-top: 45px;
+	width: 50%;
+	text-shadow: #000 0 -1px 0;
+	color: #d8d8d8;
+	font-size: 14px;
+}
+
+#passwordError h3 {
+	margin-bottom: 10px;
+	color: #191919;
+	text-shadow: #7f7f7f 0 1px 0;
+}
+
+/* @end */
+
+body {
+	font: 14px "Helvetica Neue", Helvetica, Arial, Geneva, sans-serif;
+}
+
+#headerBar {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 26px;
+	border-bottom: 1px solid #222;
+	padding: 8px 10px 10px;
+	text-shadow: #cbcbcb 0 1px 0;
+	text-align: right;
+	background-color: #999;
+	background: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#555));
+}
+
+#headerBar img {
+	float: left;
+	margin-right: 5px;
+	margin-top: -3px;
+	margin-left: -1px;
+}
+
+#headerBar h1 {
+	font-size: 20px;
+	float: left;
+}
+
+#headerBar a {
+	text-decoration: none;
+}
+
+#headerBar button#lock {
+	height: 21px;
+	width: 21px;
+	background-image: url(../images/lock-icon.png);
+	position: absolute;
+	right: 12px;
+	top: 9px;
+}
+
+#headerBar button#lock:hover {
+	background-position: 0 -21px;
+}
+
+#headerBar button#lock:active {
+	background-position: 0 -42px;
+}
+
+/* @group Sources Pane */
+
+#sourcesPane {
+	background-color: #dadee5;
+	width: 175px;
+	position: fixed;
+	top: 45px;
+	bottom: 0;
+	color: #333;
+	text-shadow: #e5eeff 0 1px 0;
+	font-size: 12px;
+	border-right: 1px solid #7f7f7f;
+	font-weight: bold;
+}
+
+#sourcesPane li {
+	border-style: solid;
+	border-top-width: 1px;
+	border-top-color: #e8ecf4;
+	border-bottom-width: 1px;
+	border-bottom-color: #b7bfcb;
+	padding: 10px 10px 10px 15px;
+}
+
+#sourcesPane li.selected {
+	border-bottom-color: #4c5d7f;
+	background: #8594b2;
+	background: -webkit-gradient(linear, left top, left bottom, from(#acbfe5), to(#4c6698));
+	color: #fff;
+	text-shadow: #000 0 1px 2px;
+	border-top-color: #c3cee5;
+	box-shadow: -10px 10px 0px #888;
+}
+
+#sourcesPane li img {
+	float: left;
+	margin-right: 7px;
+	margin-top: -3px;
+}
+
+#sourcesPane li.subFolder {
+	padding: 0;
+	border-style: none;
+}
+
+#sourcesPane ul li {
+	padding-left: 35px;
+}
+
+/* @end */
+
+/* @group List Pane */
+
+#listPane {
+	width: 280px;
+	position: fixed;
+	left: 176px;
+	border-right: 1px solid #7f7f7f;
+	background-color: #f2f2f2;
+	top: 45px;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#listPane li {
+	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#ddd));
+	padding: 10px;
+	border-top: 1px solid #fff;
+	border-bottom: 1px solid #b2b2b2;
+	text-shadow: #fff 0 1px 0;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 12px;
+	color: #656565;
+	line-height: 16px;
+}
+
+#listPane li strong {
+	color: #000;
+	font-size: 16px;
+}
+
+#listPane li.selected {
+	border-bottom-color: #4c5d7f;
+	color: #dae1f2;
+	text-shadow: #000 0 1px 1px;
+	border-top-color: #c3cee5;
+	box-shadow: -10px 10px 0px #888;
+	font-weight: bold;
+	background-color: #7485a6;
+	background: -webkit-gradient(linear, left top, left bottom, from(#acbfe5), to(#334e80));
+}
+
+#listPane li.selected strong {
+	color: #fff;
+	text-shadow: #000000 0 1px 2px;
+}
+
+/* @end */
+
+/* @group Details Pane */
+
+#detailsPane {
+	position: fixed;
+	right: 0;
+	top: 45px;
+	left: 457px;
+	padding: 25px 25px 25px 10px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	bottom: 0;
+}
+
+#detailsPane td {
+	padding-left: 10px;
+	padding-bottom: 5px;
+}
+
+#detailsPane .label {
+	color: #989898;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: right;
+	width: 130px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	display: block;
+}
+
+th {
+	vertical-align: middle;
+	text-align: left;
+	padding-right: 5px;
+	padding-left: 5px;
+	font-size: 14px;
+	padding-bottom: 25px;
+	font-weight: normal;
+	font-style: normal;
+	color: #7f7f7f;
+}
+
+th h1 {
+	font-size: 20px;
+	margin-bottom: 3px;
+	color: #000;
+}
+
+th img {
+	width: 50px;
+	height: 50px;
+	float: right;
+}
+
+td.spacer {
+	height: 10px;
+}
+
+
+/* crap of Dave's that Dan will want to clean up */
+
+#emptyDetailsPane {
+	position: fixed;
+	right: 0;
+	top: 45px;
+	left: 457px;
+	padding: 25px 25px 25px 10px;
+	overflow-x: hidden;
+	overflow-y: yes;
+}
+
+.selected .sectionCount {
+	color:white;
+}
+.sectionCount {
+	font-size: 80%;
+	color: #777;
+	float:right;
+}
+
+/* @group Copy and Show Fields */
+
+a.copy {
+	color: black;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+span.copyButton {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+	border: 1px solid #c8c8c8;
+	color: #c8c8c8;
+	margin-left: 5px;
+	visibility: hidden;
+	font-size: 9px;
+	padding-left: 3px;
+	padding-right: 2px;
+	padding-bottom: 1px;
+}
+
+a.copy:hover span.copyButton {
+	visibility: visible;
+	color: #1464ff;
+	border-color: #78aaff;
+}
+
+a.copy:active span.copyButton {
+	color: #000;
+	border-color: #000;
+}
+
+span.hideRevealButton {
+	color: #1464ff;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+a.revealButton {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+	border: 1px solid #c8c8c8;
+	color: #c8c8c8;
+	margin-left: 5px;
+	visibility: hidden;
+	font-size: 9px;
+	padding: 0 2px 1px 3px;
+}
+
+span.hideRevealButton:hover a.revealButton, span.hideRevealButton:hover span.copyButton {
+	visibility: visible;
+}
+
+a.revealButton:hover {
+	color: #1464ff;
+	border-color: #78aaff;
+}
+
+a.revealButton:active {
+	color: #000;
+	border-color: #000;
+}
+
+/* @end */
+/* @end */
+
+/* @group Message Box styles */
+#messageBox_wrapper {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,.5);
+}
+#messageBox {
+	position:relative;
+	top: 50%;
+	margin-right:auto;
+	margin-left:auto;
+	background-color:#aaa;
+	background: -webkit-gradient(linear, left top, left bottom, from(#aaa), to(#555));
+	-webkit-border-radius:6px;
+	-moz-border-radius:6px;
+	border-radius:6px;
+	-webkit-box-shadow:0px 5px 20px rgba(0,0,0,.6);
+	box-shadow:0px 3px 10px #000000;
+	width: 460px;
+	padding: 20px 25px 16px;
+	font-size: 16px;
+	line-height: 25px;
+	text-align: center;
+	margin-top: -105px;
+}
+
+#messageBox h1{
+	font-size: 22px;
+	text-shadow: #ccc 0 1px 0;
+	line-height: 22px;
+	color: #7e0000;
+	margin-bottom: 15px;
+}
+
+#messageBox p {
+	margin-bottom: 10px;
+}
+
+#messageBox a {
+	color: #650000;
+	font-weight: bold;
+	text-shadow: #848484 0 1px 0;
+}
+
+#messageBox a:hover {
+	text-shadow: #999 0 1px 0;
+}
+
+a#messageBox_help {
+	background-image: url(../images/help-button.png);
+	width: 34px;
+	height: 34px;
+	display: inline-block;
+}
+
+a#messageBox_help:hover {
+	background-position: 0 -34px;
+}
+
+a#messageBox_help:active {
+	background-position: 0 -68px;
+}
+
+a#messageBox_dismiss {
+	background-image: url(../images/dismiss-button.png);
+	width: 97px;
+	height: 34px;
+	cursor:pointer;
+	text-indent: -9999px;
+	display: inline-block;
+	margin-left: 30px;
+}
+
+a#messageBox_dismiss:hover {
+	background-position: 0 -34px;
+}
+
+a#messageBox_dismiss:active {
+	background-position: 0 -68px;
+}
+/* @end */

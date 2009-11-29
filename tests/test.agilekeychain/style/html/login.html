@@ -1,0 +1,43 @@
+<div id="wrapper">
+	<img id="background" src="./style/images/body-bg.png" alt="" />
+	<img id="top" src="./style/images/border-bg.png" alt="" />
+	<img id="bottom" src="./style/images/border-bg.png" alt="" />
+	<img id="left" src="./style/images/border-sides.png" alt="" />
+	<img id="right" src="./style/images/border-sides.png" alt="" />
+	<img id="doors" src="./style/images/doors.png" alt="" />
+
+	<form id="login" name="login" method="post" action="" onsubmit="verifyPassword($('masterPassword').value); return false;">
+
+		<label for="masterPassword" id="passwordLabel"></label>
+		<input id="masterPassword" type="password" name="masterPassword" value="" tabindex="1" />
+
+		<button id="unlock" type="submit" tabindex="2"></button>
+
+		<!--Had to make the keyhole background a form element because it's impossible to make form spacing the same on all browsers (couldn't make things line up together)-->
+		<button id="keyhole" type="button" name="keyhole" value="" tabindex="-1"></button>
+
+	</form>
+	
+	<div id="passwordError" style="display:none;">
+	    <h3>Password Hint:</h3>
+	    <p id="masterPasswordHint"></p>
+	</div>
+
+	<img id="rivetTL" src="./style/images/rivet.png" alt="" />
+	<img id="rivetTR" src="./style/images/rivet.png" alt="" />
+	<img id="rivetBL" src="./style/images/rivet.png" alt="" />
+	<img id="rivetsDoorsTop" src="./style/images/rivets2.png" alt="" />
+	<img id="rivetsDoorsBottom" src="./style/images/rivets2.png" alt="" />
+
+	<a id="help" href="#"></a>
+
+	<img id="branding" src="./style/images/branding.png" alt="" />
+</div>
+<div id="messageBox_wrapper" style="display:none;">
+	<div id="messageBox">
+		<h1 id="messageBox_title"></h1>
+		<div id="messageBox_message"></div>
+		<a id="messageBox_help" href="#"></a>
+		<a id="messageBox_dismiss" href=""></a>
+	</div>
+</div>

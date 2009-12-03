@@ -1623,6 +1623,7 @@ var GibberishAES = {
     },
 
     openSSLKey: function(passwordArr, saltArr) {
+        console.log('Nr:%d Nb:%d Nk:%d', this.Nr, this.Nb, this.Nk);
         var rounds = this.Nr >= 12 ? 3: 2;
         var key = [];
         var iv = [];
@@ -2079,8 +2080,12 @@ var GibberishAES = {
 	},
 
 	decryptBase64UsingKey: function(string, inKeyArray) {
+	  console.log("b64validation : %o", string);
         var binaryArr = this.Base64.decode(string);
-		return this.decryptBinaryUsingKey(binaryArr, inKeyArray);
+        console.log("validation : %o", binaryArr);
+        var dec =this.decryptBinaryUsingKey(binaryArr, inKeyArray);
+        console.log("dec: %o", GibberishAES.s2a(dec));
+		    return dec;
 	},
 
 	decryptBinaryUsingKey: function(binaryArr, inKeyArray) {
@@ -2101,6 +2106,9 @@ var GibberishAES = {
 		}
 
 		try {
+		      console.log("key: %o", key);
+		      console.log("iv: %o", iv);
+		      console.log("encdat : %o", binaryArr);
 	        return this.decryptBinaryUsingKeyAndIvec(binaryArr, key, iv);
 		}
 		catch (e) {
@@ -2550,7 +2558,6 @@ var Keychain = Class.create({
 
 				var verification = GibberishAES.decryptBase64UsingKey(item["validation"],GibberishAES.s2a(decryptedKey));
 				if (verification != decryptedKey) return null;
-
 				this.encryptionKeys.decryptedKeys[sl] = decryptedKey;
 				return decryptedKey;
 			}

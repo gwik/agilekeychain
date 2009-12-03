@@ -40,6 +40,7 @@ except ImportError:
     import simplejson as json
 
 from PBKDF2 import PBKDF2
+from RFC3369 import append_padding, remove_padding
 from Crypto.Cipher import AES
 from base64 import b64decode
 
@@ -52,10 +53,13 @@ except ImportError:
         return "".join([pack("@H", randint(0, 0xffff))
                         for i in range(size / 2)])
 
-class PaddingProtocolError(StandardError): pass
+
 class AgileKeychainError(StandardError): pass
 class DecryptionFailure(AgileKeychainError): pass
 class AgileKeychainOpenError(AgileKeychainError): pass
+
+def s2a(string):
+    return [ord(c) for c in string]
 
 class Key(object):
     """ A Key in the keyring
@@ -70,52 +74,13 @@ class Key(object):
     Nb = 4
     Nk = 8
 
-    @classmethod
-    def remove_padding(klass, data):
-        """Remove padding from the decrypted data
-
-        PKCS#7/RFC3369 method
-        see: http://www.di-mgt.com.au/cryptopad.html#aeslargerblocksize        
-        """
-        pad_chr = data[-1]
-        pad_len = ord(pad_chr)
-        if not pad_len in range(1, klass.BLOCK_SIZE + 1):
-            raise PaddingProtocolError, 'invalid padding size'
-        c = 1
-        for i in data[-pad_len:-1]:
-            if i != pad_chr:
-                raise PaddingProtocolError, \
-                    'invalid padding data all bytes should be ' \
-                    '%s bytes and byte #%d (last block) is %s' % \
-                        (hex(pad_len), c, hex(ord(i)))
-            c += 1
-        return data[:-pad_len]
-
-    @classmethod
-    def append_padding(klass, data):
-        """Add some padding to complete the last block
-
-        Pad with bytes all of the same value as the number of padding bytes
-        PKCS#7/RFC3369 method
-        see: http://www.di-mgt.com.au/cryptopad.html#aeslargerblocksize
-
-        The size of the padding is the number of bytes needed to complete
-        the last block.
-        The value of the padding bytes is the int corresponding to the
-        size of the padding.
-        """
-        pad_len = klass.BLOCK_SIZE - (len(data) % klass.BLOCK_SIZE)
-        return data + (chr(pad_len) * pad_len)
-
     def __init__(self, identifier, level, data, validation):
         """ initialize key
-
-        data is supposed b64encoded
         """
         self.identifier = identifier
         self.level = level
-        self.validation = b64decode(validation)
-        bin_data = b64decode(data)
+        self.validation = validation
+        bin_data = data
         if self.__is_salted(bin_data):
             self.salt = bin_data[8:16]
             self.data = bin_data[16:]
@@ -139,11 +104,13 @@ class Key(object):
         key = derived_key[:16]
         iv = derived_key[16:]
         cipher = AES.new(key, AES.MODE_CBC, iv)
-        self.__decrypted_key = self.remove_padding(cipher.decrypt(self.data))
-
+        self.__decrypted_key = remove_padding(cipher.decrypt(self.data),
+            AES.block_size)
+        self.__update_size(len(self.__decrypted_key) / 8)
+        
         if not self.__validate_decripted_key():
-            raise DecryptionFailure, 'decryption failed for key %s' % id
-        self.__update_size(len(self.__decrypted_key))
+            raise DecryptionFailure, 'decryption failed for key %s' % \
+                self.identifier
 
     def decrypt(self, data):
         """Decrypt the data using AES-CBC algorithm
@@ -153,21 +120,22 @@ class Key(object):
         """
         if self.__is_salted(data):
             (key, iv) = self.__openssl_key(
-                self.__decrypted_key, data[8:16])
+                self.__decrypted_key, data[len(self.SALTED_PREFIX):16])
             data = data[16:]
         else:
             iv = self.ZERO_IV
             h = hashlib.md5()
             h.update(self.__decrypted_key)
             key = h.digest()
+
         # Todo add exception raise
         cipher = AES.new(key, AES.MODE_CBC, iv)
         decrypted_data = cipher.decrypt(data)
-        return self.remove_padding(decrypted_data)
+        return remove_padding(decrypted_data, AES.block_size)
 
     def encrypt(self, data):
         """Encrypt some data using AES-CBC algorithm
-        """ 
+        """
         if self.__is_salted(data):
             salt = data[8:16]
             data = data[16:]
@@ -177,7 +145,7 @@ class Key(object):
         (key, iv) = self.__openssl_key(self.__decrypted_key, salt)
         cipher = AES.new(key, AES.MODE_CBC, iv)
         padding_size = (len(data) % self.BLOCK_SIZE)
-        data = self.append_padding(data)
+        data = append_padding(data, AES.block_size)
         return self.SALTED_PREFIX + salt + cipher.encrypt(data)
 
     def close(self):
@@ -187,11 +155,13 @@ class Key(object):
         return rand_function(size)
 
     def __is_salted(self, data):
-        return self.SALTED_PREFIX == data[:8]
+        return self.SALTED_PREFIX == data[:len(self.SALTED_PREFIX)]
 
     def __validate_decripted_key(self):
         data = self.decrypt(self.validation)
-        return data == self.__decrypted_key
+        res = data == self.__decrypted_key
+        del data
+        return res
 
     def __update_size(self, size):
         if size == 128:
@@ -257,13 +227,12 @@ class Keychain(object):
 
 class AgileKeychain(Keychain):
 
-    name = 'default'
-
-    def __init__(self, path):
+    def __init__(self, path, name='default'):
         self.path = path
+        self.name = name
         self.entries = None
         self.__open_keys_file()
-        self.__read_entries()
+        self.__read_entries_index()
 
     def __getitem__(self, uuid):
         return self.read_entry(uuid)
@@ -278,9 +247,7 @@ class AgileKeychain(Keychain):
     def close(self):
         for k in self.__keys:
             del(k)
-        
         del self.__keys
-        
         for k, v in self.__index_by_uuid.items():
             del(v) 
 
@@ -293,7 +260,8 @@ class AgileKeychain(Keychain):
 
     def read_entry(self, entry_uuid, force_reload=False):
         entry_from_index = self.__index_by_uuid[entry_uuid]
-        if not(force_reload) and entry_from_index:
+        if not(force_reload) and entry_from_index \
+                and entry_from_index.has_key('encrypted'):
             return entry_from_index
 
         entry_file_path = os.path.join(self.entry_base(),
@@ -301,10 +269,11 @@ class AgileKeychain(Keychain):
         file = open(entry_file_path, 'r')
         try:
             js = file.read()
-            entry = json.loads(js)
-            self.__index_by_uuid[entry['uuid']] = entry
         finally:
             file.close()
+        entry = json.loads(js)
+        self.__index_by_uuid[entry['uuid']] = entry
+        return entry
 
     def __read_entries_index(self):
         entry_index_file = os.path.join(self.entry_base(), "contents.js")
@@ -344,46 +313,45 @@ class AgileKeychain(Keychain):
                 keys = json.loads(keys_file.read())
                 self.keys = []
                 for kd in keys['list']:
-                    key = Key(identifier = str(kd['identifier']),
-                              data = str(kd['data'][:-1]),
-                              validation = str(kd['validation'][:-1]),
-                              level = str(kd['level']))
+                    key = Key(kd['identifier'],
+                              kd['level'],
+                              b64decode(kd['data'][:-1]),
+                              b64decode(kd['validation'][:-1]))
                     self.keys.append(key)
             finally:
                 keys_file.close()
         except IOError, KeyError:
             raise AgileKeychainOpenError, 'error while opening the keychain'
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     import getpass
-#     pwd = getpass.getpass('Password: ')
-#     keychain = AgileKeychain("./tests/test.agilekeychain")
-#     keychain.open(pwd)
-#     for entry in keychain.entries:
-#         print(" - %s (%s)" % (entry['title'], entry['uuid']))
+    # import getpass
+    # pwd = getpass.getpass('Password: ')
+    pwd = "strongpassword"
+    keychain = AgileKeychain("./test_data/test.agilekeychain")
+    keychain.open(pwd)
 
-#     print keychain.decrypt_entry('CD1D9656986C4415AF519F9DD346159D')
+    for entry in keychain.entries:
+        print(" - %s (%s)" % (entry['title'], entry['uuid']))
+        print keychain.decrypt_entry(entry['uuid'])
+        print "-" * 80
 
-#     key = keychain.keys[0]
+    print keychain.decrypt_entry('379A9F9791EA4853B318111C0EEEC94F')
 
-#     if key.decrypt(key.encrypt("1616161616161616")) != "1616161616161616":
-#         raise RuntimeError, "encdec failed"
+    key = keychain.keys[0]
 
-#     data_file = open("/usr/share/dict/words")
-#     data = data_file.read()
-#     key = key_ring.find_key_by_level('SL5')
-#     key.decrypt_key(pwd)
+    if key.decrypt(key.encrypt("1616161616161616")) != "1616161616161616":
+        raise RuntimeError, "encdec failed"
 
-#     encrypted = key.encrypt(data)
-#     decrypted = key.decrypt(encrypted)
+    data_file = open("/usr/share/dict/words")
+    data = data_file.read()
+    key = keychain.find_key_by_level('SL5')
 
-#     if not decrypted == data:
-#         raise RuntimeError, 'data should be the same'
+    encrypted = key.encrypt(data)
+    decrypted = key.decrypt(encrypted)
 
-#    entry = key_ring.decrypt_entry("1Password.agilekeychain/data/default/"
-#                                   "21769B1F47134DBC928BD06BE266CE5F.1password")
-#    print(entry)
+    if not decrypted == data:
+        raise RuntimeError, 'data should be the same'
 
 # TODO :
 #  - Key generation

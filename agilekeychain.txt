@@ -1,0 +1,42 @@
+"""
+    >>> from agilekeychain import *
+    >>> PWD = "strongpassword"
+
+    An agilekeychain is a package directory.
+    We can open it.
+
+    >>> keychain = AgileKeychain("./test_data/test.agilekeychain")
+    >>> keychain
+    <agilekeychain.AgileKeychain path="./test_data/test.agilekeychain">
+
+    Now we unlock it with the password. Consider using the getpasswd module
+    to ask for the password on the command line.
+
+    >>> keychain.open(PWD)
+
+    If we open it with a wrong password it raises an exception.
+    >>> keychain.open('foo')
+    Traceback (most recent call last):
+    ...
+    DecryptionFailure: decryption failed for key 883B614D3C1D46868131F1E1E770A9C1
+
+    There are two keys in the keychain
+    >>> len(keychain.keys)
+    2
+
+    >>> map(lambda d: str(d.properties['uuid']), keychain.entries)
+    ['379A9F9791EA4853B318111C0EEEC94F',
+     'F9697D6020BD4E83878CDC850A722555',
+     '679B9BA4639A4D66BF629405E37D29C9',
+     '3A53F8FB8B6F4480AADEBD6FFAFFCB5A',
+     'DF7D6107D8B0405DA5B2517A6FDA53AE',
+     'B2F666F0082A4A76BD9CEA14C74A11BF',
+     '23F59720EA334163AF413C90DFD65B51',
+     '6A1367F1128A4AE0B88676E424569390',
+     '36F7170713F54EB182FBA628C18059D5']
+"""
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

@@ -2,3 +2,5 @@ syntax: glob
 
 .git/
 *.pyc
+
+.DS_Store

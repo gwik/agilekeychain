@@ -1,7 +1,7 @@
 """
     >>> import RFC3369
     >>> BLOCK_SIZE = 16
-    
+
     Using a CBC algorithm (fixed blocks size) requires to use a padding
     protocol. The method used here is PKCS#7/RFC3369.
     It consist of adding n bytes of value n (decimal).
@@ -36,9 +36,9 @@
     Traceback (most recent call last):
     ...
     PaddingProtocolError: invalid padding size
-    
+
     Removing the padding raise if a value of the padding is not pad length
-    
+
     >>> data = "A" * 12 + "\x04\x02\x04\x04"
     >>> RFC3369.remove_padding(data, BLOCK_SIZE)
     Traceback (most recent call last):

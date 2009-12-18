@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-#
 # Copyright (c) 2009 Antonin Amand <antonin.amand@gmail.com>
 # 
 # Permission to use, copy, modify, and distribute this software and its
@@ -19,18 +17,21 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# This module is a set of classes to decrypt and encrypt data using the 
-# "AgileKeychain" format developed for 1Password by Agile Web Solutions, Inc.
-# http://agilewebsolutions.com/products/1Password
-# 
-# Encryption keys are encrypted with the AES-CBC algorithm using a password 
-# which is derived using the PBKDF2 algorithm and a salt to provide more safety.
-#
-# Data is then encrypted with encryption keys using the same AES-CBC algorithm.
-#
-# This module depends on hashlib and PyCrypto available on PyPi
-# The implementation of the PBKDF2 algorithm distributed with this module
-# is courtesy of Dwayne C. Litzenberger <dlitz@dlitz.net>
+"""
+    This module is a set of classes to decrypt and encrypt data using the 
+    "AgileKeychain" format developed for 1Password by Agile Web Solutions, Inc.
+    http://agilewebsolutions.com/products/1Password
+
+    Encryption keys are encrypted with the AES-CBC algorithm using a password 
+    which is derived using the PBKDF2 algorithm and a salt to provide more safety.
+
+    Data is then encrypted with encryption keys using the same AES-CBC algorithm.
+
+    This module depends on hashlib and PyCrypto available on PyPi
+    The implementation of the PBKDF2 algorithm distributed with this module
+    is courtesy of Dwayne C. Litzenberger <dlitz@dlitz.net>
+"""
+
 
 import hashlib
 import os

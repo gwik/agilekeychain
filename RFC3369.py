@@ -29,7 +29,7 @@ def remove_padding(data, block_size):
     pad_chr = data[-1]
     pad_len = ord(pad_chr)
     if not pad_len in range(1, block_size + 1):
-        return data
+        raise PaddingProtocolError, 'invalid padding size'
     c = 1
     for i in data[-pad_len:-1]:
         if i != pad_chr:

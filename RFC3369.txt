@@ -1,37 +1,38 @@
 """
-    >>> from agilekeychain import Key
-
+    >>> import RFC3369
+    >>> BLOCK_SIZE = 16
+    
     Using a CBC algorithm (fixed blocks size) requires to use a padding
     protocol. The method used here is PKCS#7/RFC3369.
     It consist of adding n bytes of value n (decimal).
     If the block size is 16 and last blocks lacks 6 bytes to be 16 bytes long,
     we will pad 6 bytes of the value 6.
     The string is 10 bytes long, padding size : 16 - 10 = 6
-    >>> Key.append_padding('A' * 10)
+    >>> RFC3369.append_padding('A' * 10, BLOCK_SIZE)
     'AAAAAAAAAA\\x06\\x06\\x06\\x06\\x06\\x06'
 
     If the data size is a multiple of the block size a full block of padding
     is added.
-    >>> Key.append_padding('A' * 16) == \\
+    >>> RFC3369.append_padding('A' * 16, BLOCK_SIZE) == \\
     ... ('A' * 16) + ('\\x10' * 16)
     True
 
     For 12 bytes of data it needs 4 bytes of padding with the \x04 char
-    >>> Key.append_padding('B' * 12)
+    >>> RFC3369.append_padding('B' * 12, BLOCK_SIZE)
     'BBBBBBBBBBBB\\x04\\x04\\x04\\x04'
 
     It works the same with len(data) > BLOCKSIZE only the last block is
     padded, 132 bytes data : 8 blocks of 16 bytes + 4 bytes
     so 12 bytes of bytes
 
-    >>> Key.append_padding('C' * 132) == \\
+    >>> RFC3369.append_padding('C' * 132, BLOCK_SIZE) == \\
     ... ('C' * 128) + ('C' * 4) + ('\\x0c' * 12)
     True
 
     Removing the padding raises if the value of the last block is invalid
     (> block size)
-    >>> data = ("A" * 31) + chr(Key.BLOCK_SIZE + 1)
-    >>> Key.remove_padding(data)
+    >>> data = ("A" * 31) + chr(BLOCK_SIZE + 1)
+    >>> RFC3369.remove_padding(data, BLOCK_SIZE)
     Traceback (most recent call last):
     ...
     PaddingProtocolError: invalid padding size
@@ -39,7 +40,7 @@
     Removing the padding raise if a value of the padding is not pad length
     
     >>> data = "A" * 12 + "\x04\x02\x04\x04"
-    >>> Key.remove_padding(data)
+    >>> RFC3369.remove_padding(data, BLOCK_SIZE)
     Traceback (most recent call last):
     ...
     PaddingProtocolError: invalid padding data all bytes should be 0x4 bytes and byte #2 (last block) is 0x2

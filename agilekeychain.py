@@ -239,13 +239,14 @@ class Entry(object):
 
     @property
     def uuid(self):
-        self.properties['uuid']
+        return self.properties['uuid']
 
     def decrypt(self):
         self.load()
         dec_js = self.__get_key().decrypt(
             b64decode(str(self.properties['encrypted'][:-1])))
-        self.properties = json.loads(dec_js)
+        self.properties.update(json.loads(dec_js))
+        return self
 
     def is_loaded(self):
         return self.__is_loaded
@@ -254,8 +255,9 @@ class Entry(object):
         if not self.__is_loaded:
             self.properties = self.keychain._read_entry(self.uuid)
             self.__is_loaded = True
+        return self
 
-    def __get_key():
+    def __get_key(self):
         self.load()
         if self.__key is None:
             self.__key = self.keychain.find_key_by_id(self.properties['keyID'])
@@ -353,40 +355,4 @@ class AgileKeychain(Keychain):
                 keys_file.close()
         except IOError, KeyError:
             raise AgileKeychainOpenError, 'error while opening the keychain'
-
-if __name__ == '__main__':
-
-    # import getpass
-    # pwd = getpass.getpass('Password: ')
-    pwd = "strongpassword"
-    keychain = AgileKeychain("./test_data/test.agilekeychain")
-    keychain.open(pwd)
-
-    for entry in keychain.entries:
-        print(" - %s (%s)" % (entry['title'], entry['uuid']))
-        print keychain.decrypt_entry(entry['uuid'])
-        print "-" * 80
-
-    print keychain.decrypt_entry('379A9F9791EA4853B318111C0EEEC94F')
-
-    key = keychain.keys[0]
-
-    if key.decrypt(key.encrypt("1616161616161616")) != "1616161616161616":
-        raise RuntimeError, "encdec failed"
-
-    data_file = open("/usr/share/dict/words")
-    data = data_file.read()
-    key = keychain.find_key_by_level('SL5')
-
-    encrypted = key.encrypt(data)
-    decrypted = key.decrypt(encrypted)
-
-    if not decrypted == data:
-        raise RuntimeError, 'data should be the same'
-
-# TODO :
-#  - Key generation
-#  - Key encryption
-#  - Write Access
-#  - add TESTS !
 

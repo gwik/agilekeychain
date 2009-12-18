@@ -24,7 +24,9 @@
     >>> len(keychain.keys)
     2
 
-    >>> map(lambda d: str(d.properties['uuid']), keychain.entries)
+    Keychain as some entries with an uuid.
+
+    >>> map(lambda d: str(d.properties['uuid']), keychain.entries)  #doctest: +NORMALIZE_WHITESPACE
     ['379A9F9791EA4853B318111C0EEEC94F',
      'F9697D6020BD4E83878CDC850A722555',
      '679B9BA4639A4D66BF629405E37D29C9',
@@ -34,6 +36,95 @@
      '23F59720EA334163AF413C90DFD65B51',
      '6A1367F1128A4AE0B88676E424569390',
      '36F7170713F54EB182FBA628C18059D5']
+
+    We get the first entry
+
+    >>> entry = keychain.entries[0]
+
+    It is not yet completly loaded.
+
+    >>> entry.is_loaded()
+    False
+
+    Only a few set of properties are available.
+
+    >>> entry.properties.keys()
+    ['typeName', 'createdAt', 'uuid', 'locationKey', 'title']
+
+    It as an uuid property which is a shorcut.
+
+    >>> entry.uuid
+    u'379A9F9791EA4853B318111C0EEEC94F'
+    >>> entry.properties['uuid']
+    u'379A9F9791EA4853B318111C0EEEC94F'
+    >>> entry.uuid is entry.properties['uuid']
+    True
+
+    We now load it and gets more properties :
+    >>> entry.load() #doctest: +ELLIPSIS
+    <agilekeychain.Entry ...>
+    >>> entry.is_loaded()
+    True
+    >>> entry.properties.keys() #doctest: +NORMALIZE_WHITESPACE
+    [u'locationKey',
+     u'keyID',
+     u'uuid',
+     u'title',
+     u'encrypted',
+     u'typeName',
+     u'openContents',
+     u'location',
+     u'updatedAt',
+     u'createdAt']
+
+     The password is empty because the entry is not decrypted yet.
+
+     >>> entry.properties.get(u'password', False)
+     False
+
+     We can decrypt the entry.
+
+     >>> entry.decrypt() #doctest: +ELLIPSIS
+     <agilekeychain.Entry ...>
+     >>> entry.properties.keys() #doctest: +NORMALIZE_WHITESPACE
+     [u'locationKey',
+      u'keyID',
+      u'uuid',
+      u'title',
+      u'encrypted',
+      u'typeName',
+      u'openContents',
+      u'location',
+      u'updatedAt',
+      u'password',
+      u'createdAt']
+
+     Now the password is available
+
+     >>> entry.properties['password']
+     u'3SOPpQZI9lSvPP'
+
+     We get an other not loaded entry.
+
+     >>> entry = keychain.entries[2]
+     >>> entry.is_loaded()
+     False
+
+     If we call decrypt it will do the loading automatically
+
+     >>> entry.decrypt() #doctest: +ELLIPSIS
+     <agilekeychain.Entry ...>
+
+     >>> entry.is_loaded()
+     True
+     >>> entry.properties['password']
+     u'I9lz9ykKmcfDtl'
+
+     We can chain methods.
+
+     >>> keychain.entries[2].load().decrypt() #doctest: +ELLIPSIS
+     <agilekeychain.Entry ...>
+
 """
 
 
